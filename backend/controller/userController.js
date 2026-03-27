@@ -32,6 +32,39 @@ async function registerUser(req, res) {
   }
 }
 
+async function loginUser(req,res){
+
+  try{
+      const {email,password}=req.body;
+
+    const user = await User.findOne({email});
+
+    if(!user){
+      return res.status(400).json({
+        message:"Sorry the user is not registered"
+      })
+    }
+
+    const comparepass = await bcrypt.compare(password,user.password);
+
+    if(!comparepass){
+      return res.status(400).json({
+        message:"The password is incorrect"
+      })
+    }
+    res.status(201).json ({
+      message:"You are logged in successfully"
+    })
+
+  }catch (error) {
+    console.error("Error logging user:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+  
+
+}
+
 module.exports = {
   registerUser,
+  loginUser
 };
