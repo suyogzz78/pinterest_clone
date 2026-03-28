@@ -15,81 +15,78 @@ async function registerUser(req, res) {
     }
     const hashpassword = await bcrypt.hash(password, 10);
 
-     user = await User.create({
+    user = await User.create({
       name,
       password: hashpassword,
-      email
+      email,
     });
 
-    return res.status(201).json(
-        {
-            user,
-            message:"Account registered"
-        }
-    )
+    return res.status(201).json({
+      user,
+      message: "Account registered",
+    });
   } catch (error) {
     console.error("Error registering user:", error);
     res.status(500).json({ message: "Server error" });
   }
 }
 
-async function loginUser(req,res){
+async function loginUser(req, res) {
+  try {
+    const { email, password } = req.body;
 
-  try{
-      const {email,password}=req.body;
+    const user = await User.findOne({ email });
 
-    const user = await User.findOne({email});
-
-    if(!user){
+    if (!user) {
       return res.status(400).json({
-        message:"Sorry the user is not registered"
-      })
+        message: "Sorry the user is not registered",
+      });
     }
 
-    const comparepass = await bcrypt.compare(password,user.password);
+    const comparepass = await bcrypt.compare(password, user.password);
 
-    if(!comparepass){
+    if (!comparepass) {
       return res.status(400).json({
-        message:"The password is incorrect"
-      })
+        message: "The password is incorrect",
+      });
     }
-    generatettokens(user._id,res);
-    res.status(201).json ({
-      message:"You are logged in successfully"
-    })
-
-  }catch (error) {
+    generatettokens(user._id, res);
+    res.status(201).json({
+      message: "You are logged in successfully",
+    });
+  } catch (error) {
     console.error("Error logging user:", error);
     res.status(500).json({ message: "Server error" });
   }
-  
-
 }
 
-async function myProfile(req,res){
+async function myProfile(req, res) {
+  try {
+    const user = await User.findById(req.user._id);
 
-
-  try{
- const user = await User.findById(req.user._id);
-
-  res.json(user);
-
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({
+      message: "error",
+    });
   }
+}
 
-  catch(err){
+async function userProfile(req, res) {
+  try {
+    const user = await User.findById(req.params.id);
+    res.json(user);
+  } catch (err) {
 
     res.status(500).json({
       message:"error"
     })
   }
- 
-
-
-
 }
 
 module.exports = {
   registerUser,
   loginUser,
-  myProfile
+  myProfile,
+  userProfile
 };
