@@ -1,3 +1,4 @@
+const { generatettokens } = require("../utils/generatetokens");
 const User = require("./../model/userModel");
 
 const bcrypt = require("bcrypt");
@@ -52,6 +53,7 @@ async function loginUser(req,res){
         message:"The password is incorrect"
       })
     }
+    generatettokens(user._id,res);
     res.status(201).json ({
       message:"You are logged in successfully"
     })
@@ -64,7 +66,30 @@ async function loginUser(req,res){
 
 }
 
+async function myProfile(req,res){
+
+
+  try{
+ const user = await User.findById(req.user._id);
+
+  res.json(user);
+
+  }
+
+  catch(err){
+
+    res.status(500).json({
+      message:"error"
+    })
+  }
+ 
+
+
+
+}
+
 module.exports = {
   registerUser,
-  loginUser
+  loginUser,
+  myProfile
 };
