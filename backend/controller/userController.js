@@ -77,10 +77,54 @@ async function userProfile(req, res) {
     const user = await User.findById(req.params.id).select("-password");
     res.json(user);
   } catch (err) {
-
     res.status(500).json({
-      message:"error"
-    })
+      message: "error",
+    });
+  }
+}
+
+async function followerandfollowing(req, res) {
+  try {
+    const user = await User.findById(req.params.id);
+    const loggedinuser = await User.findById(req.user._id);
+
+    if (!user) {
+      return res.status(400).json({
+        message: "No user with this id",
+      });
+    }
+    if (user._id.toString() === loggedinuser._id.toString()) {
+      return res.status(400).json({
+        message: "You cannot follow yourself",
+      });
+    }
+    
+    if (user.followers.includes(loggedinuser._id)) {
+      const indexfollowing = loggedinuser.following.indexOf(user._id);
+      const indexfollower = user.followers.indexOf(loggedinuser._id);
+
+      loggedinuser.following.splice(indexfollowing, 1);
+      user.followers.splice(indexfollower, 1);
+
+      await loggedinuser.save();
+      await user.save();
+
+      res.json({
+        message: "User unfollowed",
+      });
+    } else {
+      loggedinuser.following.push(user._id);
+      user.followers.push(loggedinuser._id);
+
+      await loggedinuser.save();
+      await user.save();
+
+      return res.json({ message: "User followed" });
+    }
+  } catch (error) {
+    return res.status(500).json({
+      message: "server error",
+    });
   }
 }
 
@@ -88,5 +132,6 @@ module.exports = {
   registerUser,
   loginUser,
   myProfile,
-  userProfile
+  userProfile,
+  followerandfollowing,
 };
