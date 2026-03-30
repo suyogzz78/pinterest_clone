@@ -98,7 +98,7 @@ async function followerandfollowing(req, res) {
         message: "You cannot follow yourself",
       });
     }
-    
+
     if (user.followers.includes(loggedinuser._id)) {
       const indexfollowing = loggedinuser.following.indexOf(user._id);
       const indexfollower = user.followers.indexOf(loggedinuser._id);
@@ -128,10 +128,21 @@ async function followerandfollowing(req, res) {
   }
 }
 
+async function logoutUser(req,res){
+res.cookie("token","",{maxAge:0});
+
+res.json({
+  message:"User logged out",
+})
+
+
+}
+
 module.exports = {
   registerUser,
   loginUser,
   myProfile,
   userProfile,
   followerandfollowing,
+  logoutUser
 };
