@@ -8,7 +8,6 @@ const tokens = jwt.sign({_id},process.env.SECRET_KEY,{
 
 res.cookie("token",tokens,{ 
     maxAge:15*24*60*60*1000,
-    httpOnly:true,
     sameSite:"strict"
 })
 
