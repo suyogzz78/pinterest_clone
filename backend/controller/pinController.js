@@ -67,8 +67,7 @@ const getallpins = async (req,res)=>{
     }
 }
 
-
-    const getpinbypinid = async (req,res)=>{
+const getpinbypinid = async (req,res)=>{
         try{
 
         const pin = await Pin.findById(req.params.id).populate("owner","-password");//here we get the pin by id and populate the owner field with the user details except the password
@@ -83,10 +82,12 @@ const getallpins = async (req,res)=>{
             })
         }
     }
+    
 module.exports={
     createpin,
     getallpins,
     getpinbypinid,
+  
 }
 
 
