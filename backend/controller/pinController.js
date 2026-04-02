@@ -49,8 +49,44 @@ const createpin = async (req,res)=>{
 
 }
 
+
+const getallpins = async (req,res)=>{
+    try{
+
+        const pins = await Pin.find().sort({createdAt:-1});//here we get all the pins from the database and sort them by createdAt in descending order
+
+        res.status(200).json({
+            message:"Pins fetched successfully",
+            pins
+        })
+    }
+    catch(err){
+        return res.status(500).json({
+            message:"Error getting pins"
+        })
+    }
+}
+
+
+    const getpinbypinid = async (req,res)=>{
+        try{
+
+        const pin = await Pin.findById(req.params.id).populate("owner","-password");//here we get the pin by id and populate the owner field with the user details except the password
+        res.status(200).json({
+            message:"Pin fetched successfully",
+            pin
+        })
+    }
+        catch(err){
+            return res.status(500).json({
+                message:"Error getting pin"
+            })
+        }
+    }
 module.exports={
     createpin,
+    getallpins,
+    getpinbypinid,
 }
 
 
