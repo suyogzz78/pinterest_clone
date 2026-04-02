@@ -8,6 +8,7 @@ const router = express.Router();
 
 router.post("/createpin",authmiddleware,uploadfile, createpin);
 router.get("/getpins",authmiddleware, getallpins);
+router.get("/getpin/:id",authmiddleware, getpinbypinid);
 
 
 
