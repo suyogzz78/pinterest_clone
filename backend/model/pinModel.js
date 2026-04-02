@@ -16,7 +16,7 @@ owner :{
     ref:"User",
 },
 image:{
-    type:String,
+  id:String,
     url:String,
 },
 
