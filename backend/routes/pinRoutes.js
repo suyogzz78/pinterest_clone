@@ -9,6 +9,7 @@ const {
   commentonpins,
   deletecomment,
   deletepin,
+  updatePin,
 } = require("../controller/pinController");
 
 const router = express.Router();
@@ -19,6 +20,7 @@ router.get("/getpin/:id", authmiddleware, getpinbypinid);
 router.post("/comment/:id", authmiddleware, commentonpins);
 router.delete("/comment/:id", authmiddleware, deletecomment);
 router.delete("/deletepin/:id", authmiddleware, deletepin);
+router.put("/updatepin/:id", authmiddleware, updatePin);
 
 
 module.exports = router;
