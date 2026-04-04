@@ -7,6 +7,7 @@ const {
   getallpins,
   getpinbypinid,
   commentonpins,
+  deletecomment,
   deletepin,
 } = require("../controller/pinController");
 
@@ -16,7 +17,8 @@ router.post("/createpin", authmiddleware, uploadfile, createpin);
 router.get("/getpins", authmiddleware, getallpins);
 router.get("/getpin/:id", authmiddleware, getpinbypinid);
 router.post("/comment/:id", authmiddleware, commentonpins);
-router.delete("/comment/:id", authmiddleware, deletepin);
+router.delete("/comment/:id", authmiddleware, deletecomment);
+router.delete("/deletepin/:id", authmiddleware, deletepin);
 
 
 module.exports = router;
