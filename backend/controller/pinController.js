@@ -98,9 +98,8 @@ const commentonpins = async (req, res) => {
   }
 };
 
-
 const deletecomment = async (req, res) => {
- try {
+  try {
     const pin = await Pin.findById(req.params.id);
     if (!pin) {
       return res.status(400).json({
@@ -108,15 +107,14 @@ const deletecomment = async (req, res) => {
       });
     }
 
-    if(!req.query.commentid){
-
+    if (!req.query.commentid) {
       return res.status(400).json({
         message: "Please provide comment id",
       });
     }
 
     const commentindex = pin.comments.findIndex(
-    (comment) => comment._id.toString() === req.query.commentid.toString()
+      (comment) => comment._id.toString() === req.query.commentid.toString(),
     );
 
     if (commentindex === -1) {
@@ -127,38 +125,69 @@ const deletecomment = async (req, res) => {
 
     const comment = pin.comments[commentindex];
 
-
-    if(comment.user.toString() === req.user._id.toString()){
-
+    if (comment.user.toString() === req.user._id.toString()) {
       pin.comments.splice(commentindex, 1);
-    
 
-    await pin.save();
+      await pin.save();
 
-    res.status(200).json({
-      message: "Comment deleted successfully",
-      pin,
-    });
-  }
-  else{
-    return res.status(403).json({
-      message: "You are not authorized to delete this comment",
-    });
-  }
-
-
-
-  }catch (err) {
+      res.status(200).json({
+        message: "Comment deleted successfully",
+        pin,
+      });
+    } else {
+      return res.status(403).json({
+        message: "You are not authorized to delete this comment",
+      });
+    }
+  } catch (err) {
     return res.status(500).json({
       message: "Error deleting comment",
     });
   }
 
-}
+};
+
+
+
+  const deletepin = async (req, res) => {
+    try {
+      const pin = await Pin.findById(req.params.id);
+      if (!pin) {
+        return res.status(400).json({
+          message: "No pin with this id",
+        });
+      }
+
+      if(pin.owner.toString() !== req.user._id.toString()){
+
+
+        res.status(403).json({
+          message: "You are not authorized to delete this pin",
+        });
+      }
+
+      await cloudinary.v2.uploader.destroy(pin.image.id); //here we delete the image from cloudinary using the public id of the image
+
+      await pin.deleteOne(); //here we delete the pin from the database
+
+      res.status(200).json({
+        message: "Pin deleted successfully",
+      }); 
+
+
+
+    } catch (err) {
+      return res.status(500).json({
+        message: "Error deleting pin",
+      });
+    }
+  };
+
 module.exports = {
   createpin,
   getallpins,
   getpinbypinid,
   commentonpins,
   deletecomment,
+  deletepin,
 };
