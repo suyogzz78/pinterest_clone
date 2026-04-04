@@ -183,6 +183,47 @@ const deletecomment = async (req, res) => {
     }
   };
 
+  const updatePin = async (req, res) => {
+try{
+
+  const pin = await Pin.findById(req.params.id);
+      if (!pin) {
+        return res.status(400).json({
+          message: "No pin with this id",
+        });
+      }
+
+      if(pin.owner.toString() !== req.user._id.toString()){
+
+
+        res.status(403).json({
+          message: "You are not authorized to update this pin",
+        });
+      }
+
+
+      pin.title = req.body.title ;
+      pin.pin = req.body.pin ;
+      await pin.save();
+
+      res.status(200).json({
+        message: "Pin updated successfully",
+        pin,
+      });
+
+
+
+
+
+}catch(err){
+  return res.status(500).json({
+    message: "Error updating pin",
+  });
+}
+
+
+  };
+
 module.exports = {
   createpin,
   getallpins,
@@ -190,4 +231,5 @@ module.exports = {
   commentonpins,
   deletecomment,
   deletepin,
+  updatePin,
 };
