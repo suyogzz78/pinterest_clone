@@ -99,7 +99,7 @@ const commentonpins = async (req, res) => {
 };
 
 
-const deletepin = async (req, res) => {
+const deletecomment = async (req, res) => {
  try {
     const pin = await Pin.findById(req.params.id);
     if (!pin) {
@@ -128,7 +128,7 @@ const deletepin = async (req, res) => {
     const comment = pin.comments[commentindex];
 
 
-    if(comment.user.toString() == req.user._id.toString()){
+    if(comment.user.toString() === req.user._id.toString()){
 
       pin.comments.splice(commentindex, 1);
     
@@ -141,7 +141,7 @@ const deletepin = async (req, res) => {
     });
   }
   else{
-    return res.status(400).json({
+    return res.status(403).json({
       message: "You are not authorized to delete this comment",
     });
   }
@@ -150,7 +150,7 @@ const deletepin = async (req, res) => {
 
   }catch (err) {
     return res.status(500).json({
-      message: "Error deleting pin",
+      message: "Error deleting comment",
     });
   }
 
@@ -160,4 +160,5 @@ module.exports = {
   getallpins,
   getpinbypinid,
   commentonpins,
+  deletecomment,
 };
