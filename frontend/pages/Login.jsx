@@ -1,15 +1,25 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import download from "../src/assets/download.png";
+import { useUser } from "../context/UserContext";
+import { useNavigate } from "react-router-dom";
+
 
 const Login = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
+  const {LoginUser,loading} = useUser();
+
+  const navigate = useNavigate();
   const submithandler = (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
     console.log("Email:", email);
     console.log("Password:", password);
+
+    LoginUser(email,password,navigate);// Call the login function from context with email and password
+
+
   };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-200 shadow-lg">
