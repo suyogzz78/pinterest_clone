@@ -5,6 +5,7 @@ import Login from "../pages/login";
 import Register from "../pages/Register";
 import { useUser } from "../context/UserContext";
 import { Loading2 } from "../components/Loading";
+import Navbar from "../components/Navbar";
 
 
 
@@ -16,6 +17,8 @@ function App() {
     <Loading2 />
   ) : (
     <BrowserRouter>
+
+    {isAuthenticated && <Navbar />} {/* Show Navbar only when authenticated */}
       <Routes>
         <Route path="/" element={isAuthenticated ? <Homepage /> : <Login />} />
         <Route path="/login" element={isAuthenticated ? <Homepage /> : <Login />} />
