@@ -1,17 +1,36 @@
-import { createContext } from "react";
-
+import { createContext, useState, useEffect, useContext } from "react";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const PinContext = createContext();
 
-export const PinProvider({children})=>{
+export const PinProvider = ({ children }) => {
+  const [pins, setPins] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    return(
-        <PinContext.Provider value={{}}>
-            {children}
-        </PinContext.Provider>
-    )
-}
+  async function fetchPins() {
+    try {
+      const { data } = await axios.get("/api/pins/getpins");
+      console.log(data);
+      setPins(data);
+    } catch (err) {
+      toast.error("Error fetching pins");
+    } finally {
+      setLoading(false);
+    }
+  }
 
-export const PinUse = () => {
-    return useContext(PinContext);
-}
+  useEffect(() => {
+    fetchPins();
+  }, []);
+
+  return (
+    <PinContext.Provider value={{ pins, loading }}>
+      {children}
+    </PinContext.Provider>
+  );
+};
+
+export const usePins = () => {
+  return useContext(PinContext);
+};
