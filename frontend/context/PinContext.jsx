@@ -12,7 +12,8 @@ export const PinProvider = ({ children }) => {
     try {
       const { data } = await axios.get("/api/pins/getpins");
       console.log(data);
-      setPins(data);
+      setPins(data.pins);
+      setLoading(false);
     } catch (err) {
       toast.error("Error fetching pins");
     } finally {
@@ -20,12 +21,32 @@ export const PinProvider = ({ children }) => {
     }
   }
 
+
+  const [singlePin, setSinglePin] = useState(null);
+
+
+  async function fetchPinById(id) {
+    if (!id) {
+      
+      return;
+    }
+    try {
+      const { data } = await axios.get(`/api/pins/getpin/${id}`);
+      setSinglePin(data.pin);
+      setLoading(false);
+    } catch (err) {
+      toast.error("Error fetching pin details");
+      setLoading(false);
+    }
+  }
+ 
+
   useEffect(() => {
     fetchPins();
   }, []);
 
   return (
-    <PinContext.Provider value={{ pins, loading }}>
+    <PinContext.Provider value={{ pins, loading, singlePin, fetchPinById }}>
       {children}
     </PinContext.Provider>
   );
