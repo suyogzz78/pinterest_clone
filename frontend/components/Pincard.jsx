@@ -22,7 +22,7 @@ const Pincard = ({ pin }) => {
         <div className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
           <div className="flex  items-center ">
             <Link
-              to={`/pins/${pin._id}`}
+              to={`/pin/${pin._id}`}
               className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-6 rounded-lg transition-colors duration-200"
             >
               View Details
