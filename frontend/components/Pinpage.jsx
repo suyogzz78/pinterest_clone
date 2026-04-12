@@ -3,10 +3,11 @@ import { usePins } from "../context/PinContext";
 import { useParams } from "react-router-dom";
 import { Loading2 } from "../components/Loading";
 import { useUser } from "../context/UserContext";
+import { MdDelete } from "react-icons/md";
 
 const Pinpage = () => {
   const { singlePin, loading, fetchPinById } = usePins();
-  const {user}= useUser();
+  const { user } = useUser();
 
   const { id } = useParams();
 
@@ -35,45 +36,48 @@ const Pinpage = () => {
                 )}
               </div>
 
-              <div className="w-full md:w-1/2 p-2 flex flex-col justify-between ">
-                <div>
+              <div className="w-full md:w-1/2 p-2 flex flex-col  ">
+                <div className="flex items-center justify-center mb-4 gap-5 justify-between">
                   <h2 className="text-2xl font-bold mb-2">{singlePin.title}</h2>
-                  <p className="text-gray-700 ">{singlePin.pin}</p>
+{/* 
                   <div className="space-y-4">
-                {singlePin.comments && singlePin.comments.length > 0 ? (
-                  singlePin.comments.map((c) => (
-                    <div
-                      key={c._id}
-                      className="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition"
-                    >
-                      <div className="flex justify-between items-start mb-2">
-                        <p className="font-semibold text-gray-800">{c.name}</p>
-                        {singlePin.owner?._id === user?._id  && (
-                        <button
-                          onClick={() => handleDeleteComment(c._id)}
-                          className="text-red-500 hover:text-red-600 text-sm font-semibold"
+                    {singlePin.comments && singlePin.comments.length > 0 ? (
+                      singlePin.comments.map((c) => (
+                        <div
+                          key={c._id}
+                          className="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition"
                         >
-                          Delete
-                        </button>)}
-                        
-                      </div>
-                      <p className="text-gray-700">{c.comment}</p>
-                    </div>
-                  ))
-                ) : (
-                  <p className="text-gray-500 text-center py-8">
-                    No comments yet. Be the first to comment!
-                  </p>
-                )}
-              </div>
+                          <div className="flex justify-between items-start mb-2">
+                            <p className="font-semibold text-gray-800">
+                              {c.name}
+                            </p>
+                            {singlePin.owner?._id === user?._id && (
+                              <button
+                                onClick={() => handleDeleteComment(c._id)}
+                                className="text-red-500 hover:text-red-600 text-sm font-semibold"
+                              >
+                                Delete
+                              </button>
+                            )}
+                          </div>
+                          <p className="text-gray-700">{c.comment}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <p className="text-gray-500 text-center py-8">
+                        No comments yet. Be the first to comment!
+                      </p>
+                    )}
+                  </div>
+                </div> */}
 
-
-            
-
-
-                 
-
+                {singlePin.owner && singlePin.owner._id === user?._id && (
+                  <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-2 rounded transition">
+                      <MdDelete/>
+                  </button>)}
                 </div>
+
+
 
                 <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-200">
                   <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
@@ -86,6 +90,9 @@ const Pinpage = () => {
                     <p className="text-gray-500 text-sm">
                       {singlePin.owner?.email}
                     </p>
+                    <p className="text-gray-500 text-sm">
+                      {singlePin.owner.followers ? singlePin.owner.followers.length : 0} followers
+                      </p>
                   </div>
                 </div>
               </div>
