@@ -59,8 +59,7 @@ export const PinProvider = ({ children }) => {
       setBtnLoading(false);
     }
   }
-
-  async function deletePin(id) {
+async function deletePin(id) {
     setBtnLoading(true);
     try {
       const { data } = await axios.delete(`/api/pins/deletepin/${id}`);
@@ -73,6 +72,7 @@ export const PinProvider = ({ children }) => {
       setBtnLoading(false);
     }
   }
+  
 
   useEffect(() => {
     fetchPins();
