@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { Loading2 } from "../components/Loading";
 import { useUser } from "../context/UserContext";
 import { MdDelete } from "react-icons/md";
+import { FaEdit } from "react-icons/fa";
 
 const Pinpage = () => {
   const { singlePin, loading, fetchPinById } = usePins();
@@ -37,44 +38,26 @@ const Pinpage = () => {
               </div>
 
               <div className="w-full md:w-1/2 p-2 flex flex-col  ">
-                <div className="flex items-center justify-center mb-4 gap-5 justify-between">
+                <div className="flex items-center  mb-4 gap-5 justify-between">
                   <h2 className="text-2xl font-bold mb-2">{singlePin.title}</h2>
-{/* 
-                  <div className="space-y-4">
-                    {singlePin.comments && singlePin.comments.length > 0 ? (
-                      singlePin.comments.map((c) => (
-                        <div
-                          key={c._id}
-                          className="bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition"
-                        >
-                          <div className="flex justify-between items-start mb-2">
-                            <p className="font-semibold text-gray-800">
-                              {c.name}
-                            </p>
-                            {singlePin.owner?._id === user?._id && (
-                              <button
-                                onClick={() => handleDeleteComment(c._id)}
-                                className="text-red-500 hover:text-red-600 text-sm font-semibold"
-                              >
-                                Delete
-                              </button>
-                            )}
-                          </div>
-                          <p className="text-gray-700">{c.comment}</p>
-                        </div>
-                      ))
-                    ) : (
-                      <p className="text-gray-500 text-center py-8">
-                        No comments yet. Be the first to comment!
-                      </p>
-                    )}
-                  </div>
-                </div> */}
+
+                  <div className="flex justify-end space-x-3">
+                
+                {singlePin.owner && singlePin.owner._id === user?._id && (
+                  <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-2 rounded transition">
+                      <FaEdit/>
+                  </button>)}
+               
+
+
 
                 {singlePin.owner && singlePin.owner._id === user?._id && (
                   <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-2 rounded transition">
                       <MdDelete/>
                   </button>)}
+                  </div>
+
+
                 </div>
 
 
@@ -93,10 +76,30 @@ const Pinpage = () => {
                     <p className="text-gray-500 text-sm">
                       {singlePin.owner.followers ? singlePin.owner.followers.length : 0} followers
                       </p>
+                      
                   </div>
                 </div>
+                <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-200">
+                  <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                    {singlePin.owner?.name?.charAt(0).toUpperCase()}
+                  </div>
+
+                  <form className="flex-1 space-x-4 flex items-center">
+                    <input
+                      type="text"
+                      placeholder="Add a comment..."
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 max-w-md"
+                    />
+
+                    <button className="bg-red-700 px-4 py-3 text-gray-200 rounded-lg font-semibold hover:bg-red-600 transition">
+                      Add
+                    </button>
+                  </form>
+                 
+                </div>
               </div>
-            </div>
+              </div>
+         
           )}
         </div>
       )}
