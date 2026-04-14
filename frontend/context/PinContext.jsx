@@ -1,6 +1,6 @@
 // frontend/src/context/PinContext.jsx
 import { createContext, useState, useEffect, useContext } from "react";
-import axios from '../utils/axiosConfig'; // Use configured axios
+import axios from "../utils/axiosConfig"; // Use configured axios
 import { toast } from "react-hot-toast";
 
 const PinContext = createContext();
@@ -34,7 +34,7 @@ export const PinProvider = ({ children }) => {
   }
 
   const [btnloading, setBtnLoading] = useState(false);
-  
+
   async function createPin(title, pin, image, navigate) {
     setBtnLoading(true);
     try {
@@ -59,27 +59,39 @@ export const PinProvider = ({ children }) => {
       setBtnLoading(false);
     }
   }
-async function deletePin(id) {
-    setBtnLoading(true);
+
+  async function updatePin( id,title, pin, setEdit) {
     try {
-      const { data } = await axios.delete(`/api/pins/deletepin/${id}`);
-      setPins(pins.filter((pin) => pin._id !== id));
-      toast.success(data.message || "Pin deleted successfully!");
+      const { data } = await axios.put(`/api/pins/updatepin/${id}`,{title,pin});
+      toast.success(data.message);
+      fetchPins(id);
+      setEdit(false);
     } catch (error) {
-      console.error("Delete pin error:", error);
-      toast.error(error.response?.data?.message || "Failed to delete pin");
-    } finally {
-      setBtnLoading(false);
+      toast.error(error.response.data.message);
     }
   }
-  
+
+  async function deletePin(id,navigate){
+    try{
+      const {data} = await axios.delete(`/api/pins/deletepin/${id}`);
+      toast.success(data.message);
+      navigate("/")
+
+    }
+    catch(error){
+      toast.error(error.response.data.message);
+
+    }a
+  }
 
   useEffect(() => {
     fetchPins();
   }, []);
 
   return (
-    <PinContext.Provider value={{ pins, loading, singlePin, fetchPinById, createPin, deletePin, btnloading }}>
+    <PinContext.Provider
+      value={{ pins, loading, singlePin, fetchPinById, createPin, btnloading,updatePin, deletePin }}
+    >
       {children}
     </PinContext.Provider>
   );
