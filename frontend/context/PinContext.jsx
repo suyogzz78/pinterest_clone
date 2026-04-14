@@ -60,9 +60,12 @@ export const PinProvider = ({ children }) => {
     }
   }
 
-  async function updatePin( id,title, pin, setEdit) {
+  async function updatePin(id, title, pin, setEdit) {
     try {
-      const { data } = await axios.put(`/api/pins/updatepin/${id}`,{title,pin});
+      const { data } = await axios.put(`/api/pins/updatepin/${id}`, {
+        title,
+        pin,
+      });
       toast.success(data.message);
       fetchPins(id);
       setEdit(false);
@@ -71,17 +74,22 @@ export const PinProvider = ({ children }) => {
     }
   }
 
-  async function deletePin(id,navigate){
-    try{
-      const {data} = await axios.delete(`/api/pins/deletepin/${id}`);
+  async function deletePin(id, navigate) {
+    try {
+      const { data } = await axios.delete(`/api/pins/deletepin/${id}`);
       toast.success(data.message);
-      navigate("/")
-
-    }
-    catch(error){
+      navigate("/");
+    } catch (error) {
       toast.error(error.response.data.message);
-
-    }a
+    }
+  }
+  async function commentPin(comment, id) {
+    try {
+      const { data } = await axios.post(`/api/pins/comment/${id}`, {comment});
+      toast.success(data.message);
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
   }
 
   useEffect(() => {
@@ -90,7 +98,17 @@ export const PinProvider = ({ children }) => {
 
   return (
     <PinContext.Provider
-      value={{ pins, loading, singlePin, fetchPinById, createPin, btnloading,updatePin, deletePin }}
+      value={{
+        pins,
+        loading,
+        singlePin,
+        fetchPinById,
+        createPin,
+        btnloading,
+        updatePin,
+        deletePin,
+        commentPin
+      }}
     >
       {children}
     </PinContext.Provider>
