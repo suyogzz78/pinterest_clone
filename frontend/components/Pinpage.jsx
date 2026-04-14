@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from "react";
+import React, { useEffect, useState } from "react";
 import { usePins } from "../context/PinContext";
 import { useNavigate, useParams } from "react-router-dom";
 import { Loading2 } from "../components/Loading";
@@ -6,34 +6,36 @@ import { useUser } from "../context/UserContext";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 
-
 const Pinpage = () => {
-  const { singlePin, loading, fetchPinById ,updatePin,deletePin} = usePins();
+  const { singlePin, loading, fetchPinById, updatePin, deletePin, commentPin } =
+    usePins();
   const { user } = useUser();
   const navigate = useNavigate();
 
   const { id } = useParams();
 
-const [title, settitle] = useState("");
+  const [comment, setcomment] = useState("");
+
+  const [title, settitle] = useState("");
   const [edit, setEdit] = useState("");
   const [pinvalue, setpinvalue] = useState("");
+
+  const commentHandler = (e) => {
+    e.preventDefault();
+    commentPin(comment, singlePin._id);
+  };
   const editHandler = () => {
-    settitle(singlePin.title);// Set title state to current pin title for editing
-    setpinvalue(singlePin.pin);// Set pin value state to current pin value for editing
-    setEdit(!edit );// Toggle edit mode
-  }
-  const updateHandler=()=>{
+    settitle(singlePin.title); // Set title state to current pin title for editing
+    setpinvalue(singlePin.pin); // Set pin value state to current pin value for editing
+    setEdit(!edit); // Toggle edit mode
+  };
+  const updateHandler = () => {
+    updatePin(singlePin._id, title, pinvalue, setEdit);
+  };
 
-    updatePin(singlePin._id,title,pinvalue,setEdit);
-
-
-  }
-
-  const deleteHandler=()=>{
-
-    deletePin(singlePin._id,navigate);
-
-  }
+  const deleteHandler = () => {
+    deletePin(singlePin._id, navigate);
+  };
 
   useEffect(() => {
     fetchPinById(id);
@@ -70,44 +72,54 @@ const [title, settitle] = useState("");
                       className="text-2xl font-bold mb-2 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
                     />
                   ) : (
-                    <h2 className="text-2xl font-bold mb-2">{singlePin.title}</h2>
+                    <h2 className="text-2xl font-bold mb-2">
+                      {singlePin.title}
+                    </h2>
                   )}
-                 
 
                   <div className="flex justify-end space-x-3">
                     {singlePin.owner && singlePin.owner._id === user?._id && (
-                      <button className="bg-black hover:bg-gray-800 text-white font-bold py-2 px-2 rounded transition" onClick={editHandler}>
+                      <button
+                        className="bg-black hover:bg-gray-800 text-white font-bold py-2 px-2 rounded transition"
+                        onClick={editHandler}
+                      >
                         <FaEdit />
                       </button>
                     )}
 
                     {singlePin.owner && singlePin.owner._id === user?._id && (
-                      <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-2 rounded transition" onClick={deleteHandler}>
+                      <button
+                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-2 rounded transition"
+                        onClick={deleteHandler}
+                      >
                         <MdDelete />
                       </button>
                     )}
                   </div>
-                  
                 </div>
-                
-                   {edit ? (
-                    <input
-                      type="text"
-                      value={pinvalue}
-                      onChange={(e) => setpinvalue(e.target.value)}
-                      className="text-2xl font-bold mb-2 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 w-full max-w-sm"
-                    />
-                  ) : (
-                    <h1 className="text-gray-900 text-lg mb-3">{singlePin.pin}</h1>
-                  )}
-                   
 
-                   {
-                    edit && <button className="bg-blue-500 py-2 px-3 mt-2 mb-2 w-full max-w-sm rounded-lg" onClick={updateHandler}>
-                      Update
-                    </button>
-                   }
-                  
+                {edit ? (
+                  <input
+                    type="text"
+                    value={pinvalue}
+                    onChange={(e) => setpinvalue(e.target.value)}
+                    className="text-2xl font-bold mb-2 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 w-full max-w-sm"
+                  />
+                ) : (
+                  <h1 className="text-gray-900 text-lg mb-3">
+                    {singlePin.pin}
+                  </h1>
+                )}
+
+                {edit && (
+                  <button
+                    className="bg-blue-500 py-2 px-3 mt-2 mb-2 w-full max-w-sm rounded-lg"
+                    onClick={updateHandler}
+                  >
+                    Update
+                  </button>
+                )}
+
                 <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-200">
                   <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
                     {singlePin.owner?.name?.charAt(0).toUpperCase()}
@@ -132,10 +144,15 @@ const [title, settitle] = useState("");
                     {singlePin.owner?.name?.charAt(0).toUpperCase()}
                   </div>
 
-                  <form className="flex-1 space-x-4 flex items-center">
+                  <form
+                    className="flex-1 space-x-4 flex items-center"
+                    onSubmit={commentHandler}
+                  >
                     <input
                       type="text"
                       placeholder="Add a comment..."
+                      value={comment}
+                      onChange={(e) => setcomment(e.target.value)}
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 max-w-md"
                     />
 
