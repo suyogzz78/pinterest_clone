@@ -7,7 +7,7 @@ import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 
 const Pinpage = () => {
-  const { singlePin, loading, fetchPinById, updatePin, deletePin, commentPin } =
+  const { singlePin, loading, fetchPinById, updatePin, deletePin, commentPin,deleteComment } =
     usePins();
   const { user } = useUser();
   const navigate = useNavigate();
@@ -36,6 +36,11 @@ const Pinpage = () => {
   const deleteHandler = () => {
     deletePin(singlePin._id, navigate);
   };
+
+
+  const handleDeleteComment = (commentid) =>{
+    deleteComment(singlePin._id,commentid);
+  }
 
   useEffect(() => {
     fetchPinById(id);
@@ -161,6 +166,36 @@ const Pinpage = () => {
                     </button>
                   </form>
                 </div>
+                {singlePin.comments?.map((c) => (
+                  <div
+                    key={c._id}
+                    className="flex items-start justify-between border-b py-3"
+                  >
+                    {/* LEFT SIDE */}
+                    <div className="flex items-start gap-3">
+                      {/* Avatar */}
+                      <div className="w-10 h-10 rounded-full bg-gray-700 text-white flex items-center justify-center font-bold">
+                        {c.name?.charAt(0).toUpperCase()}
+                      </div>
+
+                      {/* Name + Comment */}
+                      <div>
+                        <p className="font-semibold text-gray-800">{c.name}</p>
+                        <p className="text-gray-600">{c.comment}</p>
+                      </div>
+                    </div>
+
+                    {/* DELETE BUTTON */}
+                    {c.user === user?._id && (
+                      <button
+                        onClick={() => handleDeleteComment(c._id)}
+                        className="text-red-500 hover:text-red-700 font-semibold"
+                      >
+                        <MdDelete/>
+                      </button>
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           )}
