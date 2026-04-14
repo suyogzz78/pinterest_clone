@@ -92,6 +92,18 @@ export const PinProvider = ({ children }) => {
     }
   }
 
+  async function deleteComment(pinid,commentid){
+
+    try{
+
+      const {data} = await axios.delete(`/api/pins/comment/${pinid}?commentid=${commentid}`)
+
+     toast.success(data.message);
+    } catch (error) {
+      toast.error(error.response.data.message);
+    }
+  }
+
   useEffect(() => {
     fetchPins();
   }, []);
@@ -107,7 +119,8 @@ export const PinProvider = ({ children }) => {
         btnloading,
         updatePin,
         deletePin,
-        commentPin
+        commentPin,
+        deleteComment
       }}
     >
       {children}
