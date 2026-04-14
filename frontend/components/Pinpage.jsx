@@ -1,6 +1,6 @@
 import React, { useEffect,useState } from "react";
 import { usePins } from "../context/PinContext";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Loading2 } from "../components/Loading";
 import { useUser } from "../context/UserContext";
 import { MdDelete } from "react-icons/md";
@@ -8,8 +8,9 @@ import { FaEdit } from "react-icons/fa";
 
 
 const Pinpage = () => {
-  const { singlePin, loading, fetchPinById ,updatePin} = usePins();
+  const { singlePin, loading, fetchPinById ,updatePin,deletePin} = usePins();
   const { user } = useUser();
+  const navigate = useNavigate();
 
   const { id } = useParams();
 
@@ -25,6 +26,12 @@ const [title, settitle] = useState("");
 
     updatePin(singlePin._id,title,pinvalue,setEdit);
 
+
+  }
+
+  const deleteHandler=()=>{
+
+    deletePin(singlePin._id,navigate);
 
   }
 
@@ -75,7 +82,7 @@ const [title, settitle] = useState("");
                     )}
 
                     {singlePin.owner && singlePin.owner._id === user?._id && (
-                      <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-2 rounded transition">
+                      <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-2 rounded transition" onClick={deleteHandler}>
                         <MdDelete />
                       </button>
                     )}
