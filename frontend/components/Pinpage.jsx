@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import { usePins } from "../context/PinContext";
 import { useParams } from "react-router-dom";
 import { Loading2 } from "../components/Loading";
@@ -6,11 +6,18 @@ import { useUser } from "../context/UserContext";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 
+
 const Pinpage = () => {
   const { singlePin, loading, fetchPinById } = usePins();
   const { user } = useUser();
 
   const { id } = useParams();
+
+const [title, settitle] = useState("");
+  const [edit, setEdit] = useState("");
+  const editHandler = () => {
+    setEdit(!edit );// Toggle edit mode
+  }
 
   useEffect(() => {
     fetchPinById(id);
@@ -39,29 +46,37 @@ const Pinpage = () => {
 
               <div className="w-full md:w-1/2 p-2 flex flex-col  ">
                 <div className="flex items-center  mb-4 gap-5 justify-between">
-                  <h2 className="text-2xl font-bold mb-2">{singlePin.title}</h2>
+                  {edit ? (
+                    <input
+                      type="text"
+                      value={title}
+                      onChange={(e) => settitle(e.target.value)}
+                      className="text-2xl font-bold mb-2 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                    />
+                  ) : (
+                    <h2 className="text-2xl font-bold mb-2">{singlePin.title}</h2>
+                  )}
+                 
 
                   <div className="flex justify-end space-x-3">
-                
-                {singlePin.owner && singlePin.owner._id === user?._id && (
-                  <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-2 rounded transition">
-                      <FaEdit/>
-                  </button>)}
-               
+                    {singlePin.owner && singlePin.owner._id === user?._id && (
+                      <button className="bg-black hover:bg-gray-800 text-white font-bold py-2 px-2 rounded transition" onClick={editHandler}>
+                        <FaEdit />
+                      </button>
+                    )}
 
-
-
-                {singlePin.owner && singlePin.owner._id === user?._id && (
-                  <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-2 rounded transition">
-                      <MdDelete/>
-                  </button>)}
+                    {singlePin.owner && singlePin.owner._id === user?._id && (
+                      <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-2 rounded transition">
+                        <MdDelete />
+                      </button>
+                    )}
                   </div>
-
-
+                  
                 </div>
-
-
-
+                
+                <div>
+                   <h1 className="text-gray-900 text-lg mb-3">{singlePin.pin}</h1>
+                  </div>
                 <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-200">
                   <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
                     {singlePin.owner?.name?.charAt(0).toUpperCase()}
@@ -74,9 +89,11 @@ const Pinpage = () => {
                       {singlePin.owner?.email}
                     </p>
                     <p className="text-gray-500 text-sm">
-                      {singlePin.owner.followers ? singlePin.owner.followers.length : 0} followers
-                      </p>
-                      
+                      {singlePin.owner.followers
+                        ? singlePin.owner.followers.length
+                        : 0}{" "}
+                      followers
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-200">
@@ -91,15 +108,13 @@ const Pinpage = () => {
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 max-w-md"
                     />
 
-                    <button className="bg-red-700 px-4 py-3 text-gray-200 rounded-lg font-semibold hover:bg-red-600 transition">
+                    <button className="bg-red-500 px-4 py-3 text-gray-200 rounded-lg font-semibold hover:bg-red-600 transition">
                       Add
                     </button>
                   </form>
-                 
                 </div>
               </div>
-              </div>
-         
+            </div>
           )}
         </div>
       )}
