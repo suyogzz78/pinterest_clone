@@ -7,15 +7,21 @@ import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 
 const Pinpage = () => {
-  const { singlePin, loading, fetchPinById, updatePin, deletePin, commentPin,deleteComment } =
-    usePins();
+  const {
+    singlePin,
+    loading,
+    fetchPinById,
+    updatePin,
+    deletePin,
+    commentPin,
+    deleteComment,
+  } = usePins();
+
   const { user } = useUser();
   const navigate = useNavigate();
-
   const { id } = useParams();
 
   const [comment, setcomment] = useState("");
-
   const [title, settitle] = useState("");
   const [edit, setEdit] = useState("");
   const [pinvalue, setpinvalue] = useState("");
@@ -24,11 +30,13 @@ const Pinpage = () => {
     e.preventDefault();
     commentPin(comment, singlePin._id);
   };
+
   const editHandler = () => {
-    settitle(singlePin.title); // Set title state to current pin title for editing
-    setpinvalue(singlePin.pin); // Set pin value state to current pin value for editing
-    setEdit(!edit); // Toggle edit mode
+    settitle(singlePin.title);
+    setpinvalue(singlePin.pin);
+    setEdit(!edit);
   };
+
   const updateHandler = () => {
     updatePin(singlePin._id, title, pinvalue, setEdit);
   };
@@ -37,167 +45,171 @@ const Pinpage = () => {
     deletePin(singlePin._id, navigate);
   };
 
-
-  const handleDeleteComment = (commentid) =>{
-    deleteComment(singlePin._id,commentid);
-  }
+  const handleDeleteComment = (commentid) => {
+    deleteComment(singlePin._id, commentid);
+  };
 
   useEffect(() => {
     fetchPinById(id);
   }, [id, fetchPinById]);
+
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-to-b from-gray-100 to-gray-200 p-6">
       {singlePin && (
-        <div className="flex flex-col bg-gray-100 p-4 rounded-lg shadow-md">
+        <div className="max-w-7xl mx-auto bg-white/70 backdrop-blur-xl border border-gray-100 shadow-2xl rounded-3xl overflow-hidden flex flex-col md:flex-row">
           {loading ? (
-            <Loading2 />
+            <div className="p-10">
+              <Loading2 />
+            </div>
           ) : (
-            <div className="flex flex-wrap bg-white w-full rounded-lg shadow-md p-4 max-w-7xl mx-auto min-h-full">
-              <div className="w-full md:w-1/2 p-2 ">
-                {singlePin && (
-                  <img
-                    src={singlePin.image.url}
-                    alt={singlePin.title}
-                    className="w-full h-auto rounded-lg object-cover"
-                    onError={(e) => {
-                      e.target.src =
-                        "https://via.placeholder.com/300x400?text=No+Image";
-                    }}
-                  />
-                )}
+            <>
+              {/* IMAGE SECTION */}
+              <div className="w-full md:w-1/2 p-6">
+                <img
+                  src={singlePin.image.url}
+                  alt={singlePin.title}
+                  className="w-full h-[520px] object-cover rounded-2xl shadow-lg hover:scale-[1.02] transition-transform duration-300"
+                  onError={(e) => {
+                    e.target.src =
+                      "https://via.placeholder.com/300x400?text=No+Image";
+                  }}
+                />
               </div>
 
-              <div className="w-full md:w-1/2 p-2 flex flex-col  ">
-                <div className="flex items-center  mb-4 gap-5 justify-between">
+              {/* RIGHT SIDE */}
+              <div className="w-full md:w-1/2 p-6 flex flex-col">
+                {/* TITLE + ACTIONS */}
+                <div className="flex items-center justify-between mb-6">
                   {edit ? (
                     <input
                       type="text"
                       value={title}
                       onChange={(e) => settitle(e.target.value)}
-                      className="text-2xl font-bold mb-2 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
+                      className="text-2xl font-bold border border-gray-200 rounded-xl px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-red-400"
                     />
                   ) : (
-                    <h2 className="text-2xl font-bold mb-2">
+                    <h2 className="text-3xl font-bold text-gray-900">
                       {singlePin.title}
                     </h2>
                   )}
 
-                  <div className="flex justify-end space-x-3">
-                    {singlePin.owner && singlePin.owner._id === user?._id && (
-                      <button
-                        className="bg-black hover:bg-gray-800 text-white font-bold py-2 px-2 rounded transition"
-                        onClick={editHandler}
-                      >
-                        <FaEdit />
-                      </button>
-                    )}
+                  <div className="flex gap-2 ml-3">
+                    {singlePin.owner &&
+                      singlePin.owner._id === user?._id && (
+                        <button
+                          onClick={editHandler}
+                          className="p-2 rounded-xl bg-gray-900 text-white hover:scale-105 transition shadow"
+                        >
+                          <FaEdit />
+                        </button>
+                      )}
 
-                    {singlePin.owner && singlePin.owner._id === user?._id && (
-                      <button
-                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-2 rounded transition"
-                        onClick={deleteHandler}
-                      >
-                        <MdDelete />
-                      </button>
-                    )}
+                    {singlePin.owner &&
+                      singlePin.owner._id === user?._id && (
+                        <button
+                          onClick={deleteHandler}
+                          className="p-2 rounded-xl bg-red-500 text-white hover:scale-105 transition shadow"
+                        >
+                          <MdDelete />
+                        </button>
+                      )}
                   </div>
                 </div>
 
-                {edit ? (
-                  <input
-                    type="text"
-                    value={pinvalue}
-                    onChange={(e) => setpinvalue(e.target.value)}
-                    className="text-2xl font-bold mb-2 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 w-full max-w-sm"
-                  />
-                ) : (
-                  <h1 className="text-gray-900 text-lg mb-3">
-                    {singlePin.pin}
-                  </h1>
-                )}
+                {/* PIN TEXT */}
+                 {edit ? (
+                    <input
+                      type="text"
+                      value={pinvalue}
+                      onChange={(e) => setpinvalue(e.target.value)}
+                      className="text-xl font-semibold border border-gray-200 rounded-xl px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-red-400"
+                    />
+                  ) : (
+                     <p className="text-gray-700 bg-gray-50 p-4 rounded-xl mb-4 leading-relaxed shadow-sm">
+                  {singlePin.pin}
+                </p>
 
+                    
+                  )}
+
+               
                 {edit && (
                   <button
-                    className="bg-blue-500 py-2 px-3 mt-2 mb-2 w-full max-w-sm rounded-lg"
                     onClick={updateHandler}
+                    className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-xl shadow mb-4 transition"
                   >
                     Update
                   </button>
                 )}
 
-                <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-200">
-                  <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                {/* OWNER CARD */}
+                <div className="flex items-center gap-4 mb-6 p-4 bg-gray-50 rounded-2xl shadow-sm border border-gray-100">
+                  <div className="w-12 h-12 bg-gradient-to-br from-red-400 to-pink-500 rounded-full flex items-center justify-center text-white font-bold shadow">
                     {singlePin.owner?.name?.charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-800">
+                    <p className="font-semibold text-gray-900">
                       {singlePin.owner?.name}
                     </p>
-                    <p className="text-gray-500 text-sm">
+                    <p className="text-sm text-gray-500">
                       {singlePin.owner?.email}
                     </p>
-                    <p className="text-gray-500 text-sm">
-                      {singlePin.owner.followers
-                        ? singlePin.owner.followers.length
-                        : 0}{" "}
-                      followers
-                    </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 mb-6 pb-6 border-b border-gray-200">
-                  <div className="w-12 h-12 bg-red-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                    {singlePin.owner?.name?.charAt(0).toUpperCase()}
-                  </div>
 
-                  <form
-                    className="flex-1 space-x-4 flex items-center"
-                    onSubmit={commentHandler}
-                  >
-                    <input
-                      type="text"
-                      placeholder="Add a comment..."
-                      value={comment}
-                      onChange={(e) => setcomment(e.target.value)}
-                      className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 max-w-md"
-                    />
+                {/* COMMENT INPUT */}
+                <form
+                  onSubmit={commentHandler}
+                  className="flex items-center gap-3 mb-6"
+                >
+                  <input
+                    type="text"
+                    value={comment}
+                    onChange={(e) => setcomment(e.target.value)}
+                    placeholder="Write a comment..."
+                    className="w-full border border-gray-200 rounded-full px-5 py-3 focus:outline-none focus:ring-2 focus:ring-red-400 shadow-sm"
+                  />
+                  <button className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-full font-semibold shadow transition">
+                    Add
+                  </button>
+                </form>
 
-                    <button className="bg-red-500 px-4 py-3 text-gray-200 rounded-lg font-semibold hover:bg-red-600 transition">
-                      Add
-                    </button>
-                  </form>
-                </div>
-                {singlePin.comments?.map((c) => (
-                  <div
-                    key={c._id}
-                    className="flex items-start justify-between border-b py-3"
-                  >
-                    {/* LEFT SIDE */}
-                    <div className="flex items-start gap-3">
-                      {/* Avatar */}
-                      <div className="w-10 h-10 rounded-full bg-gray-700 text-white flex items-center justify-center font-bold">
-                        {c.name?.charAt(0).toUpperCase()}
+                {/* COMMENTS */}
+                <div className="space-y-3">
+                  {singlePin.comments?.map((c) => (
+                    <div
+                      key={c._id}
+                      className="flex items-start justify-between p-3 rounded-xl hover:bg-gray-50 transition border-b-2 border-gray-500"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 text-white flex items-center justify-center font-bold shadow">
+                          {c.name?.charAt(0).toUpperCase()}
+                        </div>
+
+                        <div>
+                          <p className="font-semibold text-gray-900">
+                            {c.name}
+                          </p>
+                          <p className="text-gray-600 text-sm">
+                            {c.comment}
+                          </p>
+         
+                        </div>
                       </div>
 
-                      {/* Name + Comment */}
-                      <div>
-                        <p className="font-semibold text-gray-800">{c.name}</p>
-                        <p className="text-gray-600">{c.comment}</p>
-                      </div>
+                      {c.user === user?._id && (
+                        <button
+                          onClick={() => handleDeleteComment(c._id)}
+                          className="text-red-500 hover:text-red-600 hover:scale-110 transition"
+                        >
+                          <MdDelete />
+                        </button>
+                      )}
                     </div>
-
-                    {/* DELETE BUTTON */}
-                    {c.user === user?._id && (
-                      <button
-                        onClick={() => handleDeleteComment(c._id)}
-                        className="text-red-500 hover:text-red-700 font-semibold"
-                      >
-                        <MdDelete/>
-                      </button>
-                    )}
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            </>
           )}
         </div>
       )}
