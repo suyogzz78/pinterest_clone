@@ -384,15 +384,20 @@ const Pinpage = () => {
                         <p className="text-xs text-gray-400">
                           {singlePin.owner?.email}
                         </p>
+                          <p className="text-xs text-gray-400">
+                         Followers: {singlePin.owner?.followers.length}
+                        </p>
                       </div>
                     </div>
 
                     {/* RIGHT SIDE (same div) */}
                     <button className="bg-white text-black px-4 py-1 rounded-full text-sm font-semibold hover:bg-gray-200"
-                    onClick={handleFollowButton}>
+                    onClick={handleFollowButton}
+                    >
                       Follow
                     </button>
                   </div>
+                  
 
                   {/* COMMENT INPUT */}
                   <form onSubmit={commentHandler} className="flex gap-2">
