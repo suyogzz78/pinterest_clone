@@ -116,10 +116,10 @@ export const UserProvider = ({ children }) => {
 
   async function followButton(userid) {
     try {
-      await axios.post(`/api/users/follow/${userid}`);
-      toast.success("Followed successfully");
+     const {data}= await axios.post(`/api/users/follow/${userid}`);
+      toast.success(data.message);
     } catch (error) {
-      toast.error("Error ");
+      toast.error(error.response?.data?.message);
     }
   }
   useEffect(() => {
