@@ -1,7 +1,7 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
-import download from "../src/assets/download.png";
+import logo from "../src/assets/logo.png";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "../components/Loading";
@@ -27,7 +27,7 @@ const Register = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-200 shadow-lg">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md ">
         <div className="flex justify-center mb-4">
-          <img src={download} className="h-12" />
+          <img src={logo} className="h-12" />
         </div>
 
         <div className="text-2xl font-semibold text-center">

@@ -1,15 +1,16 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import download from "../src/assets/download.png";
+import logo from "../src/assets/logo.png";
 import { useUser } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import { Loading } from "../components/Loading";
 
 
 const Login = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
-  const {LoginUser,loading} = useUser();
+  const {LoginUser,btnloading} = useUser();
 
   const navigate = useNavigate();
   const submithandler = (e) => {
@@ -17,7 +18,7 @@ const Login = () => {
     console.log("Email:", email);
     console.log("Password:", password);
 
-    LoginUser(email,password,navigate);// Call the login function from context with email and password
+    LoginUser(email,password,navigate); 
 
 
   };
@@ -25,7 +26,7 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-200 shadow-lg">
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md ">
         <div className="flex justify-center mb-4">
-          <img src={download} className="h-12" />
+          <img src={logo} className="h-12" />
         </div>
 
         <div className="text-2xl font-semibold text-center">
@@ -63,8 +64,8 @@ const Login = () => {
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-red-100 focus:border-red-500"
           />
 
-          <button type="submit" className="commonbtn">
-            Login
+          <button type="submit" className="commonbtn" disabled={btnloading}>
+            {btnloading ? <Loading /> : "Login"}
           </button>
         </form>
 

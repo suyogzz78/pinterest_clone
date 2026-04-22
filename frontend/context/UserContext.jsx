@@ -11,6 +11,7 @@ export const UserProvider = ({ children }) => {
   const [btnloading, setbtnLoading] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setloading] = useState(true);
+  const [followbtnloading,setfollowbtnloading] = useState(true);
 
   async function RegisterUser(name, email, password, navigate) {
     setbtnLoading(true);
@@ -114,14 +115,21 @@ export const UserProvider = ({ children }) => {
     }
   }
 
-  async function followButton(userid) {
-    try {
-     const {data}= await axios.post(`/api/users/follow/${userid}`);
-      toast.success(data.message);
-    } catch (error) {
-      toast.error(error.response?.data?.message);
-    }
+ async function followButton(userid) {
+  setfollowbtnloading(true);
+  try {
+    const {data} = await axios.post(`/api/users/follow/${userid}`);
+    toast.success(data.message);
+  
+    await fetchuser();
+    return data; 
+  } catch (error) {
+    toast.error(error.response?.data?.message);
+    throw error; 
+  } finally {
+    setfollowbtnloading(false);
   }
+}
   useEffect(() => {
     fetchuser();
   }, []);
@@ -137,6 +145,7 @@ export const UserProvider = ({ children }) => {
         isAuthenticated,
         loading,
         followButton,
+        followbtnloading
       }}
     >
       {children}
