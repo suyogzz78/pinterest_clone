@@ -11,3 +11,4 @@ const generateurl=(file)=>{
 
 
 module.exports={generateurl}
+ 

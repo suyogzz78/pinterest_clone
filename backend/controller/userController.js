@@ -31,6 +31,7 @@ async function registerUser(req, res) {
   }
 }
 
+// controller/userController.js
 async function loginUser(req, res) {
   try {
     const { email, password } = req.body;
@@ -50,9 +51,16 @@ async function loginUser(req, res) {
         message: "The password is incorrect",
       });
     }
+    
     generatettokens(user._id, res);
+    
+    // Don't send password back to client
+    const userWithoutPassword = user.toObject();
+    delete userWithoutPassword.password;
+    
     res.status(201).json({
       message: "You are logged in successfully",
+      user: userWithoutPassword,
     });
   } catch (error) {
     console.error("Error logging user:", error);
@@ -60,14 +68,29 @@ async function loginUser(req, res) {
   }
 }
 
+// controller/userController.js
 async function myProfile(req, res) {
   try {
-    const user = await User.findById(req.user._id);
-
+    // Check if user exists from auth middleware
+    if (!req.user) {
+      return res.status(401).json({
+        message: "Not authenticated",
+      });
+    }
+    
+    const user = await User.findById(req.user._id).select("-password");
+    
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+    
     res.json(user);
   } catch (err) {
+    console.error("Error in myProfile:", err);
     res.status(500).json({
-      message: "error",
+      message: "Server error",
     });
   }
 }
