@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Homepage from "../pages/Homepage";
-import Login from "../pages/login";
+import Login from "../pages/Login";
 import Register from "../pages/Register";
 import { useUser } from "../context/UserContext";
 import { Loading2 } from "../components/Loading";
