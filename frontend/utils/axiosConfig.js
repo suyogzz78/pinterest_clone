@@ -1,10 +1,9 @@
 // frontend/src/utils/axiosConfig.js
 import axios from 'axios';
 
-// Create axios instance with default config
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:5000',
-  withCredentials: true, 
+  baseURL: import.meta.env.VITE_API_URL,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
