@@ -8,8 +8,8 @@ const generatettokens = (_id, res) => {
     res.cookie("token", tokens, { 
         maxAge: 15 * 24 * 60 * 60 * 1000,
         httpOnly: true,     // Add this for security
-        sameSite: "lax",    // Change from "strict" to "lax"
-        secure: false,      // Set to false for localhost (HTTP)
+        sameSite: "none",    // Change from "strict" to "lax"
+        secure: true,      // Set to false for localhost (HTTP)
         path: '/'           // Explicitly set path
     });
 };
