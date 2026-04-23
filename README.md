@@ -8,7 +8,12 @@ It allows users to create pins, upload images, follow users, comment on posts, a
 ## 🚀 Live Demo
 
 - 🌐 Frontend: https://pinterest-clone-inky.vercel.app  
-- ⚙️ Backend: https://pinterest-clone-y6av.onrender.com  
+- ⚙️ Backend: https://pinterest-clone-y6av.onrender.com
+
+- ### Example API endpoints:
+- GET /api/pins/getpins
+- POST /api/users/login
+- GET /api/users/me
 
 ---
 
