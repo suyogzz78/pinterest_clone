@@ -6,6 +6,12 @@ const bcrypt = require("bcrypt");
 async function registerUser(req, res) {
   try {
     const { email, name, password } = req.body;
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        message: "All fields (name, email, password) are required",
+      });
+    }
+
     let user = await User.findOne({ email });
 
     if (user) {
@@ -51,13 +57,13 @@ async function loginUser(req, res) {
         message: "The password is incorrect",
       });
     }
-    
+
     generatettokens(user._id, res);
-    
+
     // Don't send password back to client
     const userWithoutPassword = user.toObject();
     delete userWithoutPassword.password;
-    
+
     res.status(201).json({
       message: "You are logged in successfully",
       user: userWithoutPassword,
@@ -77,15 +83,15 @@ async function myProfile(req, res) {
         message: "Not authenticated",
       });
     }
-    
+
     const user = await User.findById(req.user._id).select("-password");
-    
+
     if (!user) {
       return res.status(404).json({
         message: "User not found",
       });
     }
-    
+
     res.json(user);
   } catch (err) {
     console.error("Error in myProfile:", err);
@@ -151,14 +157,12 @@ async function followerandfollowing(req, res) {
   }
 }
 
-async function logoutUser(req,res){
-res.cookie("token","",{maxAge:0});
+async function logoutUser(req, res) {
+  res.cookie("token", "", { maxAge: 0 });
 
-res.json({
-  message:"User logged out",
-})
-
-
+  res.json({
+    message: "User logged out",
+  });
 }
 
 module.exports = {
@@ -167,5 +171,5 @@ module.exports = {
   myProfile,
   userProfile,
   followerandfollowing,
-  logoutUser
+  logoutUser,
 };
