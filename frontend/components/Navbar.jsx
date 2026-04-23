@@ -75,7 +75,7 @@ const Navbar = ({ user }) => {
             </Link>
 
             <Link
-              to="/yt"
+              to="/account"
               onClick={() => setMenu(false)}
               className="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-pink-600 text-white flex items-center justify-center hover:scale-105 transition transform font-semibold shadow-lg"
             >
