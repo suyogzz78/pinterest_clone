@@ -1,135 +1,130 @@
 // frontend/src/context/UserContext.jsx
-import { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
-import { useState } from "react";
-import axios from "../utils/axiosConfig"; // Use the configured axios instance
+import axios from "../utils/axiosConfig";
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [btnloading, setbtnLoading] = useState(false);
+  const [btnloading, setBtnLoading] = useState(false);
+  const [followbtnloading, setFollowBtnLoading] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setloading] = useState(true);
-  const [followbtnloading,setfollowbtnloading] = useState(true);
+  const [loading, setLoading] = useState(true);
+
 
   async function RegisterUser(name, email, password, navigate) {
-    setbtnLoading(true);
+    setBtnLoading(true);
     try {
-      const { data } = await axios.post("/api/users/register", {
-        name,
-        email,
-        password,
-      });
+      const { data } = await axios.post(
+        "/api/users/register",
+        { name, email, password },
+        { withCredentials: true }
+      );
+
       setUser(data.user);
       setIsAuthenticated(true);
-      setbtnLoading(false);
+
       toast.success(data.message);
       navigate("/");
+
+      // sync auth state properly
+      await fetchuser();
     } catch (error) {
       toast.error(error.response?.data?.message || "Registration failed");
-      setbtnLoading(false);
+    } finally {
+      setBtnLoading(false);
     }
   }
 
-  // async function LoginUser(email, password, navigate) {
-  //   setbtnLoading(true);
-  //   try {
-  //     const { data } = await axios.post("/api/users/login", {
-  //       email,
-  //       password,
-  //     });
-  //     setUser(data.user);
-  //     setIsAuthenticated(true);
-  //     setbtnLoading(false);
-  //     toast.success(data.message);
-  //     navigate("/");
-  //   } catch (error) {
-  //     console.error("Login error:", error);
-  //     toast.error(error.response?.data?.message || "Login failed");
-  //     setbtnLoading(false);
-  //   }
-  // }
-
-  // async function fetchuser() {
-  //   try {
-  //     const { data } = await axios.get("/api/users/me");
-  //     setUser(data);
-  //     setIsAuthenticated(true);
-  //   } catch (err) {
-  //     console.error("Error fetching user:", err);
-  //     setUser(null);
-  //     setIsAuthenticated(false);
-  //   } finally {
-  //     setloading(false);
-  //   }
-  // }
-
-  // frontend/src/context/UserContext.jsx
+  // ---------------- LOGIN ----------------
   async function LoginUser(email, password, navigate) {
-    setbtnLoading(true);
+    setBtnLoading(true);
     try {
-      const { data } = await axios.post("/api/users/login", {
-        email,
-        password,
-      });
+      const { data } = await axios.post(
+        "/api/users/login",
+        { email, password },
+        { withCredentials: true }
+      );
 
-      // data.user should now be without password
       setUser(data.user);
       setIsAuthenticated(true);
+
       toast.success(data.message);
       navigate("/");
+
+      // IMPORTANT: sync backend state
+      await fetchuser();
     } catch (error) {
-      console.error("Login error:", error);
       toast.error(error.response?.data?.message || "Login failed");
     } finally {
-      setbtnLoading(false);
+      setBtnLoading(false);
     }
   }
 
+  // ---------------- FETCH USER ----------------
   async function fetchuser() {
     try {
-      const { data } = await axios.get("/api/users/me");
-      setUser(data); // data is the user object
+      const { data } = await axios.get("/api/users/me", {
+        withCredentials: true,
+      });
+
+      setUser(data);
       setIsAuthenticated(true);
     } catch (err) {
-      // Only show error for non-401 status codes
-      if (err.response?.status !== 401) {
-        console.error("Error fetching user:", err);
-      }
       setUser(null);
       setIsAuthenticated(false);
+
+      if (err.response?.status !== 401) {
+        console.error("Fetch user error:", err);
+      }
     } finally {
-      setloading(false);
+      setLoading(false);
     }
   }
 
+  // ---------------- LOGOUT ----------------
   async function logout() {
     try {
-      await axios.get("/api/users/logout");
+      await axios.get("/api/users/logout", {
+        withCredentials: true,
+      });
+
       setUser(null);
       setIsAuthenticated(false);
+
       toast.success("Logged out successfully");
     } catch (err) {
       toast.error("Logout failed");
     }
   }
 
- async function followButton(userid) {
-  setfollowbtnloading(true);
-  try {
-    const {data} = await axios.post(`/api/users/follow/${userid}`);
-    toast.success(data.message);
-  
-    await fetchuser();
-    return data; 
-  } catch (error) {
-    toast.error(error.response?.data?.message);
-    throw error; 
-  } finally {
-    setfollowbtnloading(false);
+
+  async function followButton(userid) {
+    setFollowBtnLoading(true);
+
+    try {
+      const { data } = await axios.post(
+        `/api/users/follow/${userid}`,
+        {},
+        { withCredentials: true }
+      );
+
+      toast.success(data.message);
+
+      // refresh user (followers/following update)
+      await fetchuser();
+
+      return data;
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Follow failed");
+      throw error;
+    } finally {
+      setFollowBtnLoading(false);
+    }
   }
-}
+
+
   useEffect(() => {
     fetchuser();
   }, []);
@@ -137,15 +132,15 @@ export const UserProvider = ({ children }) => {
   return (
     <UserContext.Provider
       value={{
-        LoginUser,
-        RegisterUser,
-        logout,
         user,
-        btnloading,
         isAuthenticated,
         loading,
+        btnloading,
+        followbtnloading,
+        RegisterUser,
+        LoginUser,
+        logout,
         followButton,
-        followbtnloading
       }}
     >
       {children}
